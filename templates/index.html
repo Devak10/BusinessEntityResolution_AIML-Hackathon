@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Entity Resolution | AI/ML Project</title>
+  <meta name="description" content="Step-by-step ML pipeline walkthrough for cross-source business entity resolution.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- ──────────────────────────────────────────────────────
+     TOP NAVBAR
+     ────────────────────────────────────────────────────── -->
+<header class="navbar">
+  <div class="nav-inner">
+    <div class="nav-brand" onclick="goToPage(0)">
+      <span class="nav-brand-chip">AI Entity Resolution</span>
+      <span class="nav-brand-name">EntityResolve</span>
+    </div>
+    <nav class="nav-steps">
+      <button class="nav-step active" data-page="0">
+        <span class="nav-step-num">00</span>Overview
+      </button>
+      <button class="nav-step" data-page="1">
+        <span class="nav-step-num">01</span>Dataset
+      </button>
+      <button class="nav-step" data-page="2">
+        <span class="nav-step-num">02</span>Preprocessing
+      </button>
+      <button class="nav-step" data-page="3">
+        <span class="nav-step-num">03</span>Training
+      </button>
+      <button class="nav-step" data-page="4">
+        <span class="nav-step-num">04</span>Models
+      </button>
+      <button class="nav-step" data-page="5">
+        <span class="nav-step-num">05</span>Validation
+      </button>
+      <button class="nav-step" data-page="6">
+        <span class="nav-step-num">06</span>Demo
+      </button>
+      <button class="nav-step" data-page="7">
+        <span class="nav-step-num">07</span>Matching
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- ──────────────────────────────────────────────────────
+     PROGRESS BAR
+     ────────────────────────────────────────────────────── -->
+<div class="progress-bar-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+  <div class="progress-steps">
+    <div class="progress-dot-wrap" data-page="0">
+      <div class="progress-dot active" id="pdot-0">0</div>
+      <div class="progress-label active" id="plabel-0">Overview</div>
+    </div>
+    <div class="progress-connector" id="pcon-0"></div>
+    <div class="progress-dot-wrap" data-page="1">
+      <div class="progress-dot" id="pdot-1">1</div>
+      <div class="progress-label" id="plabel-1">Dataset</div>
+    </div>
+    <div class="progress-connector" id="pcon-1"></div>
+    <div class="progress-dot-wrap" data-page="2">
+      <div class="progress-dot" id="pdot-2">2</div>
+      <div class="progress-label" id="plabel-2">Preproc.</div>
+    </div>
+    <div class="progress-connector" id="pcon-2"></div>
+    <div class="progress-dot-wrap" data-page="3">
+      <div class="progress-dot" id="pdot-3">3</div>
+      <div class="progress-label" id="plabel-3">Training</div>
+    </div>
+    <div class="progress-connector" id="pcon-3"></div>
+    <div class="progress-dot-wrap" data-page="4">
+      <div class="progress-dot" id="pdot-4">4</div>
+      <div class="progress-label" id="plabel-4">Models</div>
+    </div>
+    <div class="progress-connector" id="pcon-4"></div>
+    <div class="progress-dot-wrap" data-page="5">
+      <div class="progress-dot" id="pdot-5">5</div>
+      <div class="progress-label" id="plabel-5">Validation</div>
+    </div>
+    <div class="progress-connector" id="pcon-5"></div>
+    <div class="progress-dot-wrap" data-page="6">
+      <div class="progress-dot" id="pdot-6">6</div>
+      <div class="progress-label" id="plabel-6">Demo</div>
+    </div>
+    <div class="progress-connector" id="pcon-6"></div>
+    <div class="progress-dot-wrap" data-page="7">
+      <div class="progress-dot" id="pdot-7">7</div>
+      <div class="progress-label" id="plabel-7">Matching</div>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────────────────
+     PAGE SHELL
+     ────────────────────────────────────────────────────── -->
+<main class="page-shell">
+
+  <!-- ════════════════════════════════════════════
+       PAGE 0 — OVERVIEW
+       ════════════════════════════════════════════ -->
+  <div class="page-view active" id="page-0">
+    <div class="container" style="padding-top: 40px; padding-bottom: 40px; flex:1;">
+      <div class="overview-layout">
+        <!-- Left column: text -->
+        <div>
+          <div class="overview-tag">AI / ML Hackathon Project</div>
+          <h1 class="overview-title">Business Entity<br>Resolution</h1>
+          <p class="overview-sub">ML-Based Cross-Source Business Matching</p>
+          <p class="overview-desc">
+            Identify records that refer to the same real-world business despite spelling variations,
+            formatting differences, abbreviations, and noisy data.
+          </p>
+
+          <!-- Model status badge -->
+          <div class="model-badge mb-32">
+            <span class="model-badge-dot"></span>
+            <span class="model-badge-text">MODEL READY</span>
+            <span class="model-badge-sub">Logistic Regression &nbsp;·&nbsp; Threshold: 0.50</span>
+          </div>
+
+          <!-- Key stats row -->
+          <div class="stat-row">
+            <div class="stat-chip">
+              <div class="stat-chip-val accent">1,000</div>
+              <div class="stat-chip-label">Source 1</div>
+            </div>
+            <div class="stat-chip">
+              <div class="stat-chip-val">800</div>
+              <div class="stat-chip-label">Source 2</div>
+            </div>
+            <div class="stat-chip">
+              <div class="stat-chip-val">750</div>
+              <div class="stat-chip-label">Source 3</div>
+            </div>
+            <div class="stat-chip">
+              <div class="stat-chip-val purple">0.9802</div>
+              <div class="stat-chip-label">Macro F0.5</div>
+            </div>
+          </div>
+
+          <!-- Start button -->
+          <button class="btn btn-primary btn-large" onclick="goToPage(1)">
+            <span>Start Project</span>
+            <span class="btn-icon">→</span>
+          </button>
+        </div>
+
+        <!-- Right column: pipeline visual -->
+        <div>
+          <div class="pipeline-visual">
+            <div class="pipe-node">SOURCE 1</div>
+            <div class="pipe-arrow"></div>
+            <div class="pipe-node">PREPROCESSING</div>
+            <div class="pipe-arrow"></div>
+            <div class="pipe-node">15 FEATURES</div>
+            <div class="pipe-arrow"></div>
+            <div class="pipe-node highlight">ML MODEL</div>
+            <div class="pipe-arrow"></div>
+            <div class="pipe-node">SOURCE 2 + SOURCE 3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 1 — DATASET
+       ════════════════════════════════════════════ -->
+  <div class="page-view" id="page-1">
+    <div class="container" style="padding-top: 8px; flex:1;">
+      <div class="page-header">
+        <div class="page-num-tag">01 &mdash; Dataset</div>
+        <h2 class="page-title">Dataset</h2>
+        <p class="page-subtitle">Synthetic demonstration dataset created for Business Entity Resolution.</p>
+      </div>
+
+      <div class="notice-box">
+        <strong>Synthetic Demonstration Dataset:</strong> This dataset was generated synthetically for training,
+        validating, and demonstrating the entity resolution pipeline. It is not the hidden organizer evaluation dataset.
+      </div>
+
+      <!-- Source cards -->
+      <div class="grid-3 mb-20">
+        <div class="source-card">
+          <span class="source-card-badge badge-ref">Reference</span>
+          <div class="source-card-name">SOURCE 1</div>
+          <div class="source-card-count">1,000</div>
+          <div class="source-card-unit">Entities</div>
+          <div class="source-card-desc">Master / Reference source. The anchor for all cross-source matching.</div>
+        </div>
+        <div class="source-card">
+          <span class="source-card-badge badge-ind">Independent</span>
+          <div class="source-card-name">SOURCE 2</div>
+          <div class="source-card-count">800</div>
+          <div class="source-card-unit">Entities</div>
+          <div class="source-card-desc">Independent business source with spelling variations and abbreviations.</div>
+        </div>
+        <div class="source-card">
+          <span class="source-card-badge badge-ind">Independent</span>
+          <div class="source-card-name">SOURCE 3</div>
+          <div class="source-card-count">750</div>
+          <div class="source-card-unit">Entities</div>
+          <div class="source-card-desc">Independent business source with casing differences and noisy records.</div>
+        </div>
+      </div>
+
+      <!-- Meta tiles -->
+      <div class="dataset-meta mb-20">
+        <div class="meta-tile">
+          <div class="meta-tile-val">2,550</div>
+          <div class="meta-tile-label">Total Records</div>
+        </div>
+        <div class="meta-tile">
+          <div class="meta-tile-val">700</div>
+          <div class="meta-tile-label">Matching S1 Entities</div>
+        </div>
+        <div class="meta-tile">
+          <div class="meta-tile-val">300</div>
+          <div class="meta-tile-label">Singleton Entities</div>
+        </div>
+        <div class="meta-tile">
+          <div class="meta-tile-val">1,210</div>
+          <div class="meta-tile-label">Matching Relationships</div>
+        </div>
+        <div class="meta-tile">
+          <div class="meta-tile-val">TSV</div>
+          <div class="meta-tile-label">File Format</div>
+        </div>
+      </div>
+
+      <!-- Schema -->
+      <div class="card mb-20">
+        <div class="section-label">Dataset Schema</div>
+        <div class="schema-cols">
+          <span class="schema-col">entity_id</span>
+          <span class="schema-col">business_name</span>
+          <span class="schema-col">business_address</span>
+          <span class="schema-col">country</span>
+        </div>
+      </div>
+
+      <!-- Linkage visual -->
+      <div class="linkage-visual">
+        <div class="linkage-node s1">SOURCE 1<br><small style="font-weight:500;font-size:11px;">Master Record</small></div>
+        <div class="linkage-arrow">↘</div>
+        <div class="linkage-hub">
+          <div class="linkage-hub-title">MATCHING PIPELINE</div>
+          <div class="linkage-hub-sub">Blocking → 15 Features → Model</div>
+        </div>
+        <div class="linkage-arrow">↗</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="linkage-node s2">SOURCE 2<br><small style="font-weight:500;font-size:11px;">Independent</small></div>
+          <div class="linkage-node s3">SOURCE 3<br><small style="font-weight:500;font-size:11px;">Independent</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="btn btn-ghost" onclick="goToPage(0)">← Back</button>
+      <button class="btn btn-primary" onclick="goToPage(2)">Next: Preprocessing →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 2 — PREPROCESSING
+       ════════════════════════════════════════════ -->
+  <div class="page-view" id="page-2">
+    <div class="container-sm" style="padding-top: 8px; flex:1;">
+      <div class="page-header">
+        <div class="page-num-tag">02 &mdash; Preprocessing</div>
+        <h2 class="page-title">Preprocessing</h2>
+        <p class="page-subtitle">Deterministic text normalization applied before feature extraction.</p>
+      </div>
+
+      <div class="grid-2 mb-24">
+        <!-- Left: Flow -->
+        <div>
+          <div class="section-label">Normalization Pipeline</div>
+          <div class="prep-flow">
+            <div class="prep-step">
+              <div class="prep-step-icon">📄</div>
+              <div>
+                <div class="prep-step-title">Raw Business Data</div>
+                <div class="prep-step-sub">Input TSV records from all 3 sources</div>
+              </div>
+            </div>
+            <div class="prep-arrow"></div>
+            <div class="prep-step">
+              <div class="prep-step-icon">🔡</div>
+              <div>
+                <div class="prep-step-title">Lowercase</div>
+                <div class="prep-step-sub">Case-fold all text uniformly</div>
+              </div>
+            </div>
+            <div class="prep-arrow"></div>
+            <div class="prep-step">
+              <div class="prep-step-icon">🔤</div>
+              <div>
+                <div class="prep-step-title">Unicode / Whitespace Normalization</div>
+                <div class="prep-step-sub">NFKD decomposition, collapse spaces</div>
+              </div>
+            </div>
+            <div class="prep-arrow"></div>
+            <div class="prep-step">
+              <div class="prep-step-icon">✂️</div>
+              <div>
+                <div class="prep-step-title">Punctuation Normalization</div>
+                <div class="prep-step-sub">Replace symbols with space tokens</div>
+              </div>
+            </div>
+            <div class="prep-arrow"></div>
+            <div class="prep-step">
+              <div class="prep-step-icon">⚖️</div>
+              <div>
+                <div class="prep-step-title">Legal Suffix Normalization</div>
+                <div class="prep-step-sub">pvt ltd, llc, inc, corp, lp, ltd</div>
+              </div>
+            </div>
+            <div class="prep-arrow"></div>
+            <div class="prep-step">
+              <div class="prep-step-icon">📍</div>
+              <div>
+                <div class="prep-step-title">Address Normalization</div>
+                <div class="prep-step-sub">st, rd, ave, blvd, fl, ste, bldg</div>
+              </div>
+            </div>
+            <div class="prep-arrow"></div>
+            <div class="prep-step prep-step-result">
+              <div class="prep-step-icon">✅</div>
+              <div>
+                <div class="prep-step-title">Normalized Data</div>
+                <div class="prep-step-sub">Zero data leakage · Raw fields preserved</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Output fields + Before/After -->
+        <div>
+          <div class="section-label">Three Normalized Fields</div>
+          <div class="norm-fields mb-20">
+            <div class="norm-field">
+              <div class="norm-field-code">business_name_normalized</div>
+              <div class="norm-field-desc">Synthetic markers removed, legal suffixes canonicalized, domain keywords expanded, punctuation stripped.</div>
+            </div>
+            <div class="norm-field">
+              <div class="norm-field-code">business_address_normalized</div>
+              <div class="norm-field-desc">Digits strictly preserved, spatial tokens canonicalized (e.g. "Avenue" → "ave", "Floor" → "fl").</div>
+            </div>
+            <div class="norm-field">
+              <div class="norm-field-code">country_normalized</div>
+              <div class="norm-field-desc">Lowercased, trimmed, standardized for exact cross-source blocking.</div>
+            </div>
+          </div>
+
+          <!-- Before / After -->
+          <div class="section-label">Transformation Example</div>
+          <div class="before-after">
+            <div class="ba-side">
+              <div class="ba-tag ba-tag-before">BEFORE (Raw)</div>
+              <div class="ba-field">
+                <div class="ba-field-label">business_name</div>
+                <div class="ba-field-val">Summit Capital Partners, L.P. (Distractor)</div>
+              </div>
+              <div class="ba-field">
+                <div class="ba-field-label">business_address</div>
+                <div class="ba-field-val">540 Madison Avenue, 28th Floor, New York, NY 10022</div>
+              </div>
+              <div class="ba-field">
+                <div class="ba-field-label">country</div>
+                <div class="ba-field-val">USA</div>
+              </div>
+            </div>
+
+            <div class="ba-divider">→</div>
+
+            <div class="ba-side">
+              <div class="ba-tag ba-tag-after">AFTER (Normalized)</div>
+              <div class="ba-field">
+                <div class="ba-field-label">business_name_normalized</div>
+                <div class="ba-field-val mono">summit capital partners lp</div>
+              </div>
+              <div class="ba-field">
+                <div class="ba-field-label">business_address_normalized</div>
+                <div class="ba-field-val mono">540 madison ave 28th fl new york ny 10022</div>
+              </div>
+              <div class="ba-field">
+                <div class="ba-field-label">country_normalized</div>
+                <div class="ba-field-val mono">usa</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="btn btn-ghost" onclick="goToPage(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goToPage(3)">Next: Training →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 3 — TRAINING & VALIDATION
+       ════════════════════════════════════════════ -->
+  <div class="page-view" id="page-3">
+    <div class="container" style="padding-top: 8px; flex:1;">
+      <div class="page-header">
+        <div class="page-num-tag">03 &mdash; Training &amp; Validation</div>
+        <h2 class="page-title">Training &amp; Validation</h2>
+        <p class="page-subtitle">Data partitioning strategy, pair statistics, and evaluation metric design.</p>
+      </div>
+
+      <!-- Split cards -->
+      <div class="split-visual mb-24">
+        <div class="split-block train">
+          <span class="split-pill train">80% Training</span>
+          <div class="split-pct">80%</div>
+          <div class="split-label">TRAINING PARTITION</div>
+          <div class="split-total">3,358</div>
+          <div class="split-total-label">Candidate Pairs</div>
+          <div class="split-pair-row">
+            <div class="split-pair">
+              <div class="split-pair-val pair-positive">958</div>
+              <div class="split-pair-label">Positive</div>
+            </div>
+            <div class="split-pair">
+              <div class="split-pair-val pair-negative">2,400</div>
+              <div class="split-pair-label">Negative</div>
+            </div>
+          </div>
+        </div>
+        <div class="split-block valid">
+          <span class="split-pill valid">20% Validation</span>
+          <div class="split-pct">20%</div>
+          <div class="split-label">VALIDATION PARTITION</div>
+          <div class="split-total">672</div>
+          <div class="split-total-label">Candidate Pairs</div>
+          <div class="split-pair-row">
+            <div class="split-pair">
+              <div class="split-pair-val pair-positive">192</div>
+              <div class="split-pair-label">Positive</div>
+            </div>
+            <div class="split-pair">
+              <div class="split-pair-val pair-negative">480</div>
+              <div class="split-pair-label">Negative</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info cards -->
+      <div class="grid-2 mb-24">
+        <div class="info-card">
+          <div class="info-card-title">Entity-Level Splitting</div>
+          <div class="info-card-text">"The split was performed at the Source 1 entity level to prevent data leakage."</div>
+          <div class="info-card-sub">All candidate pairs for a given S1 entity reside exclusively in training or validation — never both. This ensures the model is evaluated on truly unseen businesses.</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-title">Candidate Generation (Blocking)</div>
+          <div class="info-card-text">Country-exact blocking + multi-metric fuzzy similarity threshold</div>
+          <div class="info-card-sub">Only pairs passing similarity thresholds (name or address ≥ 50% token sort ratio) advance to full feature extraction. This eliminates computationally infeasible pairs while preserving high recall.</div>
+        </div>
+      </div>
+
+      <!-- F0.5 metric highlight -->
+      <div class="section-label">Primary Evaluation Metric</div>
+      <div class="metric-feature">
+        <div class="metric-feature-val">F0.5</div>
+        <div>
+          <div class="metric-feature-info-title">Precision-Weighted Metric</div>
+          <div class="metric-feature-info-sub">
+            "F0.5 gives greater importance to precision, which is important for avoiding incorrect business merges."<br><br>
+            In enterprise entity resolution, a false merge (incorrectly linking two distinct legal entities) carries significantly higher operational and compliance risk than a false non-merge.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="btn btn-ghost" onclick="goToPage(2)">← Back</button>
+      <button class="btn btn-primary" onclick="goToPage(4)">Next: Model Comparison →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 4 — MODEL COMPARISON
+       ════════════════════════════════════════════ -->
+  <div class="page-view" id="page-4">
+    <div class="container" style="padding-top: 8px; flex:1;">
+      <div class="page-header">
+        <div class="page-num-tag">04 &mdash; Model Comparison</div>
+        <h2 class="page-title">Model Comparison</h2>
+        <p class="page-subtitle">Two classification algorithms benchmarked on validation data using F0.5.</p>
+      </div>
+
+      <!-- Model cards -->
+      <div class="model-compare-grid mb-20">
+        <!-- Logistic Regression -->
+        <div class="model-card selected">
+          <div class="model-selected-badge">✓ Selected</div>
+          <div class="model-card-label">Model A</div>
+          <div class="model-card-name">Logistic Regression</div>
+          <div class="model-card-desc">L2 regularization with balanced class weighting across 15 similarity features.</div>
+          <div class="model-metrics">
+            <div class="model-metric">
+              <div class="model-metric-label">Precision</div>
+              <div class="model-metric-val">0.9495</div>
+            </div>
+            <div class="model-metric">
+              <div class="model-metric-label">Recall</div>
+              <div class="model-metric-val">0.9792</div>
+            </div>
+            <div class="model-metric featured">
+              <div class="model-metric-label">F0.5 ✦ Primary</div>
+              <div class="model-metric-val">0.9553</div>
+            </div>
+            <div class="model-metric">
+              <div class="model-metric-label">F1</div>
+              <div class="model-metric-val">0.9641</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Random Forest -->
+        <div class="model-card runner">
+          <div class="model-card-label">Model B</div>
+          <div class="model-card-name">Random Forest</div>
+          <div class="model-card-desc">100 estimators, max depth 12, balanced sub-sampling across all features.</div>
+          <div class="model-metrics">
+            <div class="model-metric">
+              <div class="model-metric-label">Precision</div>
+              <div class="model-metric-val">0.9453</div>
+            </div>
+            <div class="model-metric">
+              <div class="model-metric-label">Recall</div>
+              <div class="model-metric-val">0.9896</div>
+            </div>
+            <div class="model-metric" style="background:var(--purple-bg);border-color:var(--purple-border);">
+              <div class="model-metric-label">F0.5</div>
+              <div class="model-metric-val">0.9538</div>
+            </div>
+            <div class="model-metric">
+              <div class="model-metric-label">F1</div>
+              <div class="model-metric-val">0.9669</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selection reason card -->
+      <div class="selection-card">
+        <div class="selection-icon">✓</div>
+        <div>
+          <div class="selection-title">Selection Decision</div>
+          <div class="selection-model">Logistic Regression Selected</div>
+          <div class="selection-reason">
+            "Highest validation F0.5 (0.9553) and precision (0.9495) among the two evaluated models."
+          </div>
+          <div class="selection-note">
+            This selection is project-specific based on our validation results. We do not claim Logistic Regression is universally superior for all entity resolution tasks.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="btn btn-ghost" onclick="goToPage(3)">← Back</button>
+      <button class="btn btn-primary" onclick="goToPage(5)">Next: Final Validation →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 5 — FINAL VALIDATION
+       ════════════════════════════════════════════ -->
+  <div class="page-view" id="page-5">
+    <div class="container" style="padding-top: 8px; flex:1;">
+      <div class="page-header">
+        <div class="page-num-tag">05 &mdash; Final Validation</div>
+        <h2 class="page-title">Final Validation</h2>
+        <p class="page-subtitle">Held-out test evaluation on 200 unseen Source 1 entities — 8,566 candidate pairs.</p>
+      </div>
+
+      <!-- Challenge banner -->
+      <div class="challenge-card mb-24">
+        <div>
+          <div class="challenge-tag">Official Challenge Metric</div>
+          <div class="challenge-title">Challenge Macro F0.5</div>
+          <div class="challenge-sub">Held-out test evaluation &nbsp;·&nbsp; Macro-averaged per Source 1 entity</div>
+        </div>
+        <div class="challenge-score">0.9802</div>
+      </div>
+
+      <!-- Metrics grid -->
+      <div class="val-metrics-grid mb-24">
+        <div class="val-metric-card">
+          <div class="val-metric-label">Precision</div>
+          <div class="val-metric-val blue">98.80%</div>
+        </div>
+        <div class="val-metric-card">
+          <div class="val-metric-label">Recall</div>
+          <div class="val-metric-val blue">97.62%</div>
+        </div>
+        <div class="val-metric-card">
+          <div class="val-metric-label">F0.5</div>
+          <div class="val-metric-val purple">98.56%</div>
+        </div>
+        <div class="val-metric-card">
+          <div class="val-metric-label">F1</div>
+          <div class="val-metric-val">98.20%</div>
+        </div>
+        <div class="val-metric-card">
+          <div class="val-metric-label">Accuracy</div>
+          <div class="val-metric-val green">99.89%</div>
+        </div>
+        <div class="val-metric-card">
+          <div class="val-metric-label">Test Candidates</div>
+          <div class="val-metric-val">8,566</div>
+        </div>
+      </div>
+
+      <!-- Confusion matrix -->
+      <div class="section-label">Confusion Matrix — Held-out Test</div>
+      <div class="confusion-grid">
+        <div class="conf-cell tp">
+          <div class="conf-cell-label">True Positives</div>
+          <div class="conf-cell-val">246</div>
+          <div class="conf-cell-desc">Correctly linked matches</div>
+        </div>
+        <div class="conf-cell tn">
+          <div class="conf-cell-label">True Negatives</div>
+          <div class="conf-cell-val">8,311</div>
+          <div class="conf-cell-desc">Correctly rejected</div>
+        </div>
+        <div class="conf-cell fp">
+          <div class="conf-cell-label">False Positives</div>
+          <div class="conf-cell-val">3</div>
+          <div class="conf-cell-desc">Incorrectly merged</div>
+        </div>
+        <div class="conf-cell fn">
+          <div class="conf-cell-label">False Negatives</div>
+          <div class="conf-cell-val">6</div>
+          <div class="conf-cell-desc">Missed ground truth</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="btn btn-ghost" onclick="goToPage(4)">← Back</button>
+      <button class="btn btn-primary" onclick="goToPage(6)">Next: Demo Dataset →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 6 — DEMO DATASET
+       ════════════════════════════════════════════ -->
+  <div class="page-view" id="page-6">
+    <div class="container" style="padding-top: 8px; flex:1;">
+      <div class="page-header">
+        <div class="page-num-tag">06 &mdash; Demo Dataset</div>
+        <h2 class="page-title">Demo Dataset</h2>
+        <p class="page-subtitle">Explore the synthetic demonstration data used by the matching system.</p>
+      </div>
+
+      <!-- Quick sample buttons -->
+      <div class="quick-samples-bar mb-16">
+        <span class="quick-label">Quick samples →</span>
+        <button class="quick-btn" data-demo-id="S1-00004">Dual Match (S1-00004)</button>
+        <button class="quick-btn" data-demo-id="S1-00100">Multiple Match (S1-00100)</button>
+        <button class="quick-btn" data-demo-id="S1-00115">Singleton (S1-00115)</button>
+        <button class="quick-btn" data-demo-id="S1-00007">Tri-Match (S1-00007)</button>
+      </div>
+
+      <!-- Source tabs -->
+      <div class="demo-tabs">
+        <button class="demo-tab-btn active" data-demo-src="source1" id="dtab-source1">
+          SOURCE 1
+          <span class="demo-tab-count" id="dtab-count-source1">200</span>
+        </button>
+        <button class="demo-tab-btn" data-demo-src="source2" id="dtab-source2">
+          SOURCE 2
+          <span class="demo-tab-count" id="dtab-count-source2">167</span>
+        </button>
+        <button class="demo-tab-btn" data-demo-src="source3" id="dtab-source3">
+          SOURCE 3
+          <span class="demo-tab-count" id="dtab-count-source3">153</span>
+        </button>
+      </div>
+
+      <!-- Filters -->
+      <div class="demo-filters">
+        <input class="demo-search" type="text" id="demo-search" placeholder="Search by Entity ID or Business Name...">
+        <select class="demo-country" id="demo-country">
+          <option value="">All Countries</option>
+        </select>
+      </div>
+
+      <!-- Business list -->
+      <div class="biz-list" id="demo-biz-list">
+        <div style="text-align:center;padding:32px;color:var(--text-muted);">Loading dataset records…</div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="demo-pagination">
+        <div class="page-info" id="demo-page-info">Showing records 1 – 10</div>
+        <div class="page-btns">
+          <button class="page-btn" id="demo-prev" disabled>← Previous</button>
+          <button class="page-btn" id="demo-next">Next →</button>
+        </div>
+      </div>
+
+      <div class="notice-box mt-16" style="margin-bottom:0;">
+        <strong>Browsing only:</strong> Ground-truth labels are not exposed here and are not used in predictions. All match probabilities in the Live Matching section come purely from the trained Logistic Regression model.
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="btn btn-ghost" onclick="goToPage(5)">← Back</button>
+      <button class="btn btn-primary" onclick="goToPage(7)">Next: Live Matching →</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       PAGE 7 — LIVE ENTITY MATCHING
+       ════════════════════════════════════════════ -->
+  <div class="page-view" id="page-7">
+    <div class="container" style="padding-top: 8px; flex:1;">
+      <div class="page-header">
+        <div class="page-num-tag">07 &mdash; Live Matching</div>
+        <h2 class="page-title">Live Entity Matching</h2>
+        <p class="page-subtitle">Real-time candidate generation, 15-feature extraction, and Logistic Regression inference via Flask.</p>
+      </div>
+
+      <div class="matching-layout">
+        <!-- Left: Inference pipeline + control -->
+        <div>
+          <!-- Inference pipeline visual -->
+          <div class="inference-panel mb-20">
+            <div class="inference-panel-title">Inference Pipeline</div>
+            <div class="infer-step">
+              <div class="infer-node">
+                <div class="infer-node-title">SOURCE 1 ENTITY</div>
+                <div class="infer-node-sub">Select query</div>
+              </div>
+              <div class="infer-arrow"></div>
+              <div class="infer-node">
+                <div class="infer-node-title">CANDIDATE GENERATION</div>
+                <div class="infer-node-sub">Country blocking + fuzzy filter</div>
+              </div>
+              <div class="infer-arrow"></div>
+              <div class="infer-node">
+                <div class="infer-node-title">15 FEATURE EXTRACTION</div>
+                <div class="infer-node-sub">RapidFuzz similarity metrics</div>
+              </div>
+              <div class="infer-arrow"></div>
+              <div class="infer-node active-node">
+                <div class="infer-node-title">LOGISTIC REGRESSION</div>
+                <div class="infer-node-sub">Predict P(Match)</div>
+              </div>
+              <div class="infer-arrow"></div>
+              <div class="infer-node">
+                <div class="infer-node-title">THRESHOLD 0.50</div>
+                <div class="infer-node-sub">Binary decision boundary</div>
+              </div>
+              <div class="infer-arrow"></div>
+              <div class="infer-node" style="border-color:var(--green-border);background:var(--green-bg);">
+                <div class="infer-node-title" style="color:var(--green-text);">MATCH RESULTS</div>
+                <div class="infer-node-sub">S2 + S3 ranked output</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Control panel -->
+          <div class="control-panel">
+            <div class="control-label">Select Source 1 Entity</div>
+            <input class="entity-filter-input" type="text" id="entity-filter" placeholder="Filter by ID, Name, Country…">
+            <select class="entity-select" id="entity-select">
+              <option value="" disabled selected>Loading test entities…</option>
+            </select>
+            <button class="match-trigger-btn" id="match-btn" disabled>
+              <span id="match-btn-text">FIND MATCHES</span>
+              <span class="btn-icon" id="match-btn-icon">→</span>
+            </button>
+
+            <div class="matching-quick">
+              <div class="mq-label">Quick test samples:</div>
+              <button class="mq-btn" data-id="S1-00004">DUAL MATCH</button>
+              <button class="mq-btn" data-id="S1-00100">MULTIPLE</button>
+              <button class="mq-btn" data-id="S1-00115">SINGLETON</button>
+              <button class="mq-btn" data-id="S1-00007">TRI-MATCH</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Results -->
+        <div id="match-results-area">
+          <!-- Error -->
+          <div class="error-card" id="match-error"></div>
+
+          <!-- Loading -->
+          <div id="match-loading" style="display:none;">
+            <div class="loading-overlay">
+              <div class="spinner"></div>
+              <div class="loading-text">Running candidate generation, feature extraction, and Logistic Regression inference…</div>
+            </div>
+          </div>
+
+          <!-- Idle state -->
+          <div id="match-idle">
+            <div class="inference-panel" style="text-align:center;padding:48px 24px;">
+              <div style="font-size:32px;margin-bottom:12px;">🔍</div>
+              <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px;">Ready to Match</div>
+              <div style="font-size:13px;color:var(--text-muted);line-height:1.5;">Select a Source 1 entity from the panel on the left and click <strong>FIND MATCHES</strong> to run live ML inference.</div>
+            </div>
+          </div>
+
+          <!-- Results (hidden until response) -->
+          <div id="match-results-content" style="display:none;">
+            <!-- Source 1 query card -->
+            <div class="query-card mb-20">
+              <div class="query-tag">Query · Source 1 Entity</div>
+              <div class="query-grid">
+                <div class="query-field">
+                  <div class="query-field-label">Entity ID</div>
+                  <div class="query-field-val mono" id="r-s1-id">—</div>
+                </div>
+                <div class="query-field">
+                  <div class="query-field-label">Business Name</div>
+                  <div class="query-field-val" id="r-s1-name">—</div>
+                </div>
+                <div class="query-field">
+                  <div class="query-field-label">Address</div>
+                  <div class="query-field-val" id="r-s1-addr">—</div>
+                </div>
+                <div class="query-field">
+                  <div class="query-field-label">Country</div>
+                  <div class="query-field-val" id="r-s1-country">—</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Results heading -->
+            <div class="results-heading-bar">
+              <div class="results-heading-title">MATCHING RESULTS</div>
+              <div class="results-threshold-note">Threshold ≥ 0.50 &nbsp;·&nbsp; Sorted by probability</div>
+            </div>
+
+            <!-- Two columns -->
+            <div class="results-columns">
+              <div>
+                <div class="results-col-header">
+                  <div class="results-col-title">Source 2 Matches</div>
+                  <div class="results-count" id="r-s2-count">0</div>
+                </div>
+                <div class="match-cards" id="r-s2-cards"></div>
+              </div>
+              <div>
+                <div class="results-col-header">
+                  <div class="results-col-title">Source 3 Matches</div>
+                  <div class="results-count" id="r-s3-count">0</div>
+                </div>
+                <div class="match-cards" id="r-s3-cards"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <button class="btn btn-ghost" onclick="goToPage(6)">← Back</button>
+      <button class="btn btn-outline" onclick="resetMatch()">↺ Run Another Match</button>
+    </div>
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="page-footer">
+  <div class="footer-text">
+    Business Entity Resolution &nbsp;·&nbsp; Local Inference Only &nbsp;·&nbsp; No External APIs &nbsp;·&nbsp; Zero Data Leakage
+  </div>
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

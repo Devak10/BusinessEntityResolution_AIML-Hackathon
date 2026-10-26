@@ -1,0 +1,100 @@
+BUSINESS ENTITY RESOLUTION - FEATURE DICTIONARY
+=================================================
+This document defines the 15 engineered numeric features used for supervised
+machine learning training in the Business Entity Resolution pipeline.
+
+All features are strictly derived from preprocessed, normalized text fields:
+- business_name_normalized
+- business_address_normalized
+- country_normalized
+
+No raw entity IDs, ground-truth match flags, or database identifiers are used
+as features, preventing data leakage.
+
+1. name_ratio
+   - Meaning: Standard Levenshtein distance ratio between normalized business names.
+   - Range: [0.0, 100.0]
+   - Usefulness: Measures overall character-level edit distance similarity. Captures minor typos
+     and character swaps (e.g., 'Infotech' vs 'Infotehc').
+
+2. name_token_sort_ratio
+   - Meaning: Token-sorted Levenshtein ratio between normalized business names.
+   - Range: [0.0, 100.0]
+   - Usefulness: Invariant to word reordering (e.g., 'Apex Logistics Pvt Ltd' vs
+     'Logistics Apex Pvt Ltd'). Critical for handling variations across ERP and directory sources.
+
+3. name_token_set_ratio
+   - Meaning: Token-set ratio between normalized business names.
+   - Range: [0.0, 100.0]
+   - Usefulness: Handles subset/superset naming discrepancies by comparing the intersection
+     against remainder tokens (e.g., 'Veritas Tech' vs 'Veritas Tech Platforms Group Inc').
+
+4. name_partial_ratio
+   - Meaning: Best matching substring similarity ratio for normalized business names.
+   - Range: [0.0, 100.0]
+   - Usefulness: Detects when a shorter brand name appears cleanly inside an extended legal title.
+
+5. address_ratio
+   - Meaning: Standard Levenshtein distance ratio between normalized business addresses.
+   - Range: [0.0, 100.0]
+   - Usefulness: Quantifies character-level fidelity of the physical address string.
+
+6. address_token_sort_ratio
+   - Meaning: Token-sorted Levenshtein ratio between normalized addresses.
+   - Range: [0.0, 100.0]
+   - Usefulness: Handles reordered address components (e.g., 'Plot 18, MIDC, Andheri' vs
+     'Andheri East, Plot 18, MIDC').
+
+7. address_token_set_ratio
+   - Meaning: Token-set ratio between normalized addresses.
+   - Range: [0.0, 100.0]
+   - Usefulness: Accommodates partial or landmark-supplemented addresses (e.g., 'Near Metro Station'
+     added to an otherwise identical address).
+
+8. address_partial_ratio
+   - Meaning: Best matching substring ratio for normalized addresses.
+   - Range: [0.0, 100.0]
+   - Usefulness: Identifies shared street address lines when suite/floor numbers differ or are omitted.
+
+9. country_match
+   - Meaning: Binary flag indicating if normalized country strings are identical.
+   - Range: {0, 1}
+   - Usefulness: Serves as a vital gating feature to resolve brand collisions between different
+     international entities sharing identical or similar names (e.g., Mumbai vs Dallas).
+
+10. name_length_difference
+    - Meaning: Absolute difference in character length between the two normalized names.
+    - Range: [0, inf) (Integer)
+    - Usefulness: Large disparities signal dropped legal terms, distinct corporate entities, or distractors.
+
+11. address_length_difference
+    - Meaning: Absolute difference in character length between the two normalized addresses.
+    - Range: [0, inf) (Integer)
+    - Usefulness: Highlights omissions of postal codes, state abbreviations, or street specifications.
+
+12. name_token_overlap
+    - Meaning: Jaccard similarity percentage of token sets between normalized names.
+    - Range: [0.0, 100.0]
+    - Formula: (|tokens1 ∩ tokens2| / |tokens1 ∪ tokens2|) * 100.0
+    - Usefulness: Vocabulary-level overlap measure independent of character sequence order.
+
+13. address_token_overlap
+    - Meaning: Jaccard similarity percentage of token sets between normalized addresses.
+    - Range: [0.0, 100.0]
+    - Formula: (|tokens1 ∩ tokens2| / |tokens1 ∪ tokens2|) * 100.0
+    - Usefulness: Quantifies the proportion of shared address tokens (numbers, localities, PIN/ZIP codes).
+
+14. name_exact_match
+    - Meaning: Binary flag indicating whether normalized business names are character-identical.
+    - Range: {0, 1}
+    - Usefulness: High-confidence indicator when paired with high address similarity.
+
+15. address_exact_match
+    - Meaning: Binary flag indicating whether normalized addresses are character-identical.
+    - Range: {0, 1}
+    - Usefulness: Strong corroborating evidence for same-facility or co-located entities.
+
+LABEL (Target y):
+- label: Binary {0, 1}
+  1 = True Match (Same real-world business entity)
+  0 = Non-Match (Different business entities, including hard and easy negatives)
